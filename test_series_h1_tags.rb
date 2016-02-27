@@ -69,3 +69,6 @@ end
 
 puts '=== Tests complete!  See test_results.txt file for details. ==='
 
+# TODO:  Error Handling
+# TODO:  Refactor to handle logged-in and logged-out users
+# TODO:  Refactor to handle processing of *ANY* tag(s) on the page
