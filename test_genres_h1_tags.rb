@@ -2,7 +2,7 @@ require 'watir-webdriver'
 
 BASE_URL = 'http://www.huluqa.com'
 
-@browser = Watir::Browser.new :phantomjs
+@browser = Watir::Browser.new :chrome
 
 def check_genres_pages(browser)
   browser.goto BASE_URL
@@ -13,9 +13,9 @@ end
 
 def login(browser, username, password)
   if browser.url =~ /welcome/
-    Watir::Wait.until { @browser.div(:id, 'user-menu').present? }
+    Watir::Wait.until { browser.div(:id, 'user-menu').present? }
     browser.div(:id => 'user-menu').link(:text => 'LOG IN').click
-    browser.iframe(:id, 'login-iframe').wait_until_present(15)
+    browser.iframe(:id, 'login-iframe').wait_until_present(10)
 
     login_iframe = browser.iframe(:id, 'login-iframe')
 
@@ -34,6 +34,7 @@ end
 def check_tv_genres(browser)
   puts '**** CHECKING TV GENRES ***'
 
+  Watir::Wait.until { browser.a(:text => 'TV').present? }
   browser.a(:text => 'TV').click
 
   sleep 1
@@ -48,7 +49,7 @@ def check_tv_genres(browser)
 
   page_links.each do |page_link|
     link = page_link.attribute_value("href")
-    puts link
+    #puts link
   end
 
   # Write links to file for later processing
@@ -56,7 +57,7 @@ def check_tv_genres(browser)
     #file << "Current URL = #{@browser.url}\n"
     page_links.each do |page_link|
       link = page_link.attribute_value("href")
-      if link =~ /genres/
+      if link =~ /genres/ && link =~ /tv/
         file.puts("#{link}\n")
       end
     end
@@ -102,6 +103,7 @@ end
 def check_movie_genres(browser)
   puts '**** CHECKING MOVIES GENRES ***'
 
+  Watir::Wait.until { browser.a(:text => 'MOVIES').present? }
   browser.a(:text => 'MOVIES').click
 
   sleep 1
@@ -116,7 +118,7 @@ def check_movie_genres(browser)
 
   page_links.each do |page_link|
     link = page_link.attribute_value("href")
-    puts link
+    #puts link
   end
 
   # Write links to file for later processing
@@ -124,7 +126,7 @@ def check_movie_genres(browser)
     #file << "Current URL = #{@browser.url}\n"
     page_links.each do |page_link|
       link = page_link.attribute_value("href")
-      if link =~ /genres/
+      if link =~ /genres/ && link =~ /movies/
         file.puts("#{link}\n")
       end
     end
@@ -171,7 +173,7 @@ check_genres_pages(@browser)
 
 @browser.close
 
-puts '=== Tests complete!  See test_results.txt file for details. ==='
+puts '=== Tests complete!  See test_results.txt file(s) for details. ==='
 
 # TODO:  Error Handling
 # TODO:  Refactor to handle logged-in and logged-out users
